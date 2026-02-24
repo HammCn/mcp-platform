@@ -65,7 +65,7 @@ public class McpRateLimitConfig {
     /**
      * 请求限制数量
      */
-    @Column(name = "limit", nullable = false)
+    @Column(name = "`limit`", nullable = false)
     private Integer limit;
 
     /**

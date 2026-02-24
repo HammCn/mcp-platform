@@ -36,14 +36,17 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+        cache:
+          use_second_level_cache: false
+          use_query_cache: false
     open-in-view: false
-  
+
   # Redis 配置
   data:
     redis:
       host: localhost
       port: 6379
-      password: 
+      password:
       database: 0
       timeout: 5000ms
       lettuce:
@@ -52,7 +55,9 @@ spring:
           max-idle: 10
           min-idle: 5
           max-wait: 3000ms
-  
+      # Redis 不可用时不阻止启动
+      connect-timeout: 5000ms
+
   # Jackson 配置
   jackson:
     serialization:

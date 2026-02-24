@@ -42,5 +42,6 @@ public interface McpServiceRepository extends JpaRepository<McpService, Long> {
     /**
      * 按服务编码更新状态
      */
-    int updateStatusByServiceCode(String serviceCode, String status);
+    @Query("UPDATE McpService s SET s.status = :status WHERE s.serviceCode = :serviceCode")
+    int updateStatusByServiceCode(@Param("serviceCode") String serviceCode, @Param("status") String status);
 }
