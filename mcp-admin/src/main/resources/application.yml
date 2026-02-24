@@ -119,7 +119,7 @@ auth:
     header-name: Authorization
     prefix: Bearer 
 
-# 健康检查配置
+# 健康检查和监控配置
 management:
   endpoints:
     web:
@@ -133,9 +133,6 @@ management:
       enabled: true
     redis:
       enabled: true
-
-# Prometheus 指标配置
-management:
   metrics:
     export:
       prometheus:
