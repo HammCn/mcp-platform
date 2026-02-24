@@ -1,0 +1,169 @@
+# =====================================================
+# MCP Platform 配置文件
+# 生产环境配置
+# =====================================================
+
+server:
+  port: 8080
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    connection-timeout: 20000
+    max-connections: 8192
+
+spring:
+  application:
+    name: mcp-platform
+  
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/mcp_platform?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 50
+      idle-timeout: 30000
+      pool-name: McpHikariPool
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      leak-detection-threshold: 60000
+  
+  # JPA 配置
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+  
+  # Redis 配置
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 50
+          max-idle: 20
+          min-idle: 10
+          max-wait: 2000ms
+        cluster:
+          refresh:
+            adaptive: true
+            period: 60000
+  
+  # Jackson 配置
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: false
+    deserialization:
+      fail-on-unknown-properties: false
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+# SpringDoc OpenAPI 配置（生产环境建议关闭）
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: false
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: false
+
+# 日志配置
+logging:
+  level:
+    root: WARN
+    com.mcp: INFO
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /var/log/mcp-platform/mcp-platform.log
+    max-size: 100MB
+    max-history: 90
+    total-size-cap: 10GB
+
+# MCP 配置
+mcp:
+  server:
+    name: MCP Platform
+    version: 1.0.0
+    description: MCP 服务中台
+  protocol:
+    version: 2024-11-05
+  sse:
+    enabled: true
+    heartbeat-interval: 30s
+    max-connections: 1000
+
+# 限流配置
+rate-limit:
+  enabled: true
+  default-limit: 100
+  default-window: 60
+
+# 认证配置
+auth:
+  api-key:
+    enabled: true
+    header-name: X-API-Key
+  jwt:
+    enabled: true
+    secret: ${JWT_SECRET}
+    expiration: 86400000
+    header-name: Authorization
+    prefix: Bearer
+
+# 健康检查配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+  health:
+    db:
+      enabled: true
+    redis:
+      enabled: true
+  server:
+    port: 9090
+
+# Prometheus 指标配置
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+      environment: production
+
+# 安全配置
+security:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+  csrf:
+    enabled: false
