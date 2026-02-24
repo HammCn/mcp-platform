@@ -1,0 +1,68 @@
+// SCSS 变量定义
+
+// 主题色
+$primary-color: #409eff;
+$success-color: #67c23a;
+$warning-color: #e6a23c;
+$danger-color: #f56c6c;
+$info-color: #909399;
+
+// 文本颜色
+$text-primary: #303133;
+$text-regular: #606266;
+$text-secondary: #909399;
+$text-placeholder: #c0c4cc;
+
+// 背景色
+$bg-color: #f5f7fa;
+$bg-color-page: #ebf3ff;
+$bg-color-overlay: #ffffff;
+
+// 边框颜色
+$border-color: #dcdfe6;
+$border-color-light: #e4e7ed;
+$border-color-lighter: #ebeef5;
+$border-color-extra-light: #f2f6fc;
+
+// 字体大小
+$font-size-extra-small: 10px;
+$font-size-small: 12px;
+$font-size-base: 14px;
+$font-size-medium: 16px;
+$font-size-large: 18px;
+$font-size-extra-large: 20px;
+
+// 间距
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// 侧边栏
+$sidebar-width: 220px;
+$sidebar-collapsed-width: 64px;
+$sidebar-bg-color: #001529;
+$sidebar-text-color: rgba(255, 255, 255, 0.65);
+$sidebar-active-color: #409eff;
+
+// 头部
+$header-height: 60px;
+$header-bg-color: #ffffff;
+
+// 动画
+$transition-base: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+$transition-fast: all 0.15s ease-in-out;
+$transition-slow: all 0.5s ease-in-out;
+
+// 圆角
+$border-radius-small: 2px;
+$border-radius-base: 4px;
+$border-radius-large: 8px;
+$border-radius-round: 20px;
+$border-radius-circle: 50%;
+
+// 阴影
+$box-shadow-base: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+$box-shadow-dark: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+$box-shadow-light: 0 1px 4px rgba(0, 21, 41, 0.08);

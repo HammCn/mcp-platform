@@ -95,6 +95,7 @@ mcp-platform/
 - Maven 3.8+
 - MySQL 8.0+
 - Redis 6.0+
+- Node.js 18+ (管理后台)
 
 ### 1. 数据库初始化
 
@@ -119,7 +120,7 @@ spring:
       port: 6379
 ```
 
-### 3. 启动应用
+### 3. 启动后端服务
 
 ```bash
 # 进入项目目录
@@ -130,10 +131,24 @@ mvn clean install
 mvn spring-boot:run -pl mcp-admin
 ```
 
-### 4. 验证启动
+### 4. 启动管理后台（可选）
+
+```bash
+# 进入管理后台目录
+cd mcp-admin-ui
+
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+```
+
+### 5. 验证启动
 
 访问以下地址验证服务是否正常：
 
+- **管理后台**: http://localhost:3000 (推荐)
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
 - **健康检查**: http://localhost:8080/actuator/health
 - **Prometheus 指标**: http://localhost:8080/actuator/prometheus
