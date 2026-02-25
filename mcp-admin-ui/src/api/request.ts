@@ -14,11 +14,19 @@ const service: AxiosInstance = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
-    // 从 localStorage 获取 token
-    const token = localStorage.getItem('token')
+    // 从 localStorage 或 sessionStorage 获取 token
+    let token = localStorage.getItem('token') || sessionStorage.getItem('token')
+    
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      // 如果是 Basic token，设置 Authorization 头
+      if (token.startsWith('Basic ')) {
+        config.headers.Authorization = token
+      } else {
+        // 否则使用 Bearer token
+        config.headers.Authorization = `Bearer ${token}`
+      }
     }
+    
     return config
   },
   (error) => {

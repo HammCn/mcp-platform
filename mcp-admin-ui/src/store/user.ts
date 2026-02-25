@@ -10,8 +10,15 @@ export interface UserInfo {
 }
 
 export const useUserStore = defineStore('user', () => {
-  const token = ref<string>(localStorage.getItem('token') || '')
-  const userInfo = ref<UserInfo | null>(null)
+  const token = ref<string>(localStorage.getItem('token') || sessionStorage.getItem('token') || '')
+  const userInfo = ref<UserInfo | null>(() => {
+    try {
+      const stored = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+      return stored ? JSON.parse(stored) : null
+    } catch {
+      return null
+    }
+  })()
 
   const isLoggedIn = computed(() => !!token.value)
   const username = computed(() => userInfo.value?.username || '')
@@ -23,12 +30,21 @@ export const useUserStore = defineStore('user', () => {
   async function login(username: string, password: string, remember?: boolean) {
     const res = await loginApi(username, password, remember)
     token.value = res.token
-    userInfo.value = res.user
+    
+    // 获取用户信息
+    try {
+      userInfo.value = await getUserInfo()
+    } catch (error) {
+      // 如果获取用户信息失败，使用登录时返回的用户信息
+      userInfo.value = res.user
+    }
 
     if (remember) {
       localStorage.setItem('token', res.token)
+      localStorage.setItem('userInfo', JSON.stringify(userInfo.value))
     } else {
       sessionStorage.setItem('token', res.token)
+      sessionStorage.setItem('userInfo', JSON.stringify(userInfo.value))
     }
 
     return res

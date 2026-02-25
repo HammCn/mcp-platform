@@ -2,9 +2,13 @@ package com.mcp.admin.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 /**
@@ -27,22 +31,30 @@ public class SecurityConfig {
         requestHandler.setCsrfRequestAttributeName(null);
 
         http
+            // 禁用 CSRF（用于 REST API）
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers("/api/**")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             )
             .authorizeHttpRequests(auth -> auth
-                // API 端点需要认证
-                .requestMatchers("/api/**").authenticated()
+                // 登录端点允许匿名访问
+                .requestMatchers("/api/auth/**").permitAll()
                 // 静态资源和 actuator 端点允许访问
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                // API 端点需要认证
+                .requestMatchers("/api/**").authenticated()
                 // 其他所有请求需要认证
                 .anyRequest().authenticated()
             )
-            // 启用 Basic 认证
+            // 启用 Basic 认证（作为备用）
             .httpBasic(basic -> {})
             // 禁用 session（用于 REST API）
-            .sessionManagement(session -> session.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // 未认证时返回 401 而不是跳转登录页
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+            )
             // 禁用 frame（用于 H2 控制台，如果有使用）
             .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
