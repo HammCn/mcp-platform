@@ -11,14 +11,17 @@ export interface UserInfo {
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string>(localStorage.getItem('token') || sessionStorage.getItem('token') || '')
-  const userInfo = ref<UserInfo | null>(() => {
-    try {
-      const stored = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-      return stored ? JSON.parse(stored) : null
-    } catch {
-      return null
+  const userInfo = ref<UserInfo | null>(null)
+  
+  // 从存储中恢复用户信息
+  try {
+    const stored = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+    if (stored) {
+      userInfo.value = JSON.parse(stored)
     }
-  })()
+  } catch (e) {
+    console.error('恢复用户信息失败:', e)
+  }
 
   const isLoggedIn = computed(() => !!token.value)
   const username = computed(() => userInfo.value?.username || '')
